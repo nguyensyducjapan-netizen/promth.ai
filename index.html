@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nghệ Thuật Prompt Engineering: Hướng Dẫn Tương Tác & AI Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CHANGED: Switched to Be Vietnam Pro for better Vietnamese typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* CHANGED: Applied Be Vietnam Pro */
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #fdfbf7; /* Warm neutral background */
+            color: #1f2937;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .highlight-transition {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffffff;
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Markdown-like output styling */
+        .prose-output h3 { font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        .prose-output p { margin-bottom: 0.5em; }
+        .prose-output ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 0.5em; }
+        .prose-output strong { font-weight: 700; color: #4f46e5; }
+    </style>
+    <!-- Chosen Palette: "Warm Focus" + AI Accent (Purple/Indigo gradient) -->
+    <!-- Application Structure Plan: 
+         1. Hero: Intro.
+         2. Matrix: Radar Chart.
+         3. AI Lab (MOVED TO TOP): Gemini-powered prompt rewriter.
+         4. Deconstructor: Interactive framework analysis.
+         5. Practice (RENAMED): Gemini-powered Infinite Scenario Generator.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">AI</div>
+                <h1 class="font-bold text-xl tracking-tight text-gray-900">Prompt Master <span class="text-indigo-600 font-normal">| Interactive Guide</span></h1>
+            </div>
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-500">
+                <a href="#intro" class="hover:text-indigo-600 transition">Giới thiệu</a>
+                <a href="#ai-lab" class="hover:text-purple-600 transition font-bold text-purple-600">AI Lab ✨</a>
+                <a href="#frameworks" class="hover:text-indigo-600 transition">Phân tích</a>
+                <a href="#practice" class="hover:text-indigo-600 transition">Thực hành</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="intro" class="pt-16 pb-12 px-4 text-center max-w-4xl mx-auto">
+        <div class="inline-block px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-semibold mb-6 border border-red-100">
+            Cảnh báo: "Garbage In, Garbage Out"
+        </div>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            Biến câu lệnh mơ hồ thành <br class="hidden md:block"/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-teal-500">Mệnh lệnh tối ưu</span>
+        </h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            AI không "kém thông minh", chỉ là bạn chưa biết cách giao tiếp. Khám phá 3 cấu trúc "vàng" và sử dụng <strong>AI Lab</strong> để tối ưu hóa prompt của bạn ngay lập tức.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onclick="scrollToSection('ai-lab')" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-semibold hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                Thử nghiệm AI Lab ✨
+            </button>
+            <button onclick="scrollToSection('frameworks')" class="px-8 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition">
+                Tìm hiểu Cấu trúc
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full gap-8 grid grid-cols-1 lg:grid-cols-12">
+
+        <!-- LEFT COLUMN: Frameworks & AI Lab -->
+        <div class="lg:col-span-8 space-y-12">
+
+            <!-- SECTION 1 (MOVED): AI PROMPT LABORATORY (GEMINI POWERED) -->
+            <div id="ai-lab" class="relative overflow-hidden bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl shadow-2xl border border-indigo-700 scroll-mt-24">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-purple-500 opacity-20 blur-3xl rounded-full pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-teal-500 opacity-20 blur-3xl rounded-full pointer-events-none"></div>
+                
+                <div class="relative p-8 text-white">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-3xl">✨</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">1. Phòng Thí Nghiệm AI (AI Lab)</h3>
+                            <p class="text-indigo-200 text-sm">Được hỗ trợ bởi Gemini API</p>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-6 text-indigo-100">
+                        Nhập câu lệnh "sơ sài" của bạn, chọn cấu trúc, và xem Gemini biến hóa nó thành một Prompt chuyên nghiệp ngay lập tức.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Input Side -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-300 mb-1">1. Ý tưởng của bạn (Viết ngắn gọn)</label>
+                                <textarea id="user-input" class="w-full h-32 px-4 py-3 bg-indigo-950/50 border border-indigo-500/30 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent text-white placeholder-indigo-400 resize-none" placeholder="Ví dụ: Viết email xin sếp tăng lương..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-indigo-300 mb-1">2. Chọn cấu trúc</label>
+                                <select id="framework-select" class="w-full px-4 py-3 bg-indigo-950/50 border border-indigo-500/30 rounded-lg focus:ring-2 focus:ring-purple-400 text-white">
+                                    <option value="R-T-F">R-T-F (Nhanh gọn)</option>
+                                    <option value="C-O-S-T-A-R">C-O-S-T-A-R (Chi tiết & Cảm xúc)</option>
+                                    <option value="R-I-S-E">R-I-S-E (Quy trình & Logic)</option>
+                                </select>
+                            </div>
+
+                            <button onclick="optimizePrompt()" id="optimize-btn" class="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white font-bold rounded-lg shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                                <span>Tối Ưu Hóa Ngay ✨</span>
+                            </button>
+                        </div>
+
+                        <!-- Output Side -->
+                        <div class="bg-indigo-950/80 rounded-lg border border-indigo-500/30 p-5 flex flex-col min-h-[300px]">
+                            <div class="flex items-center justify-between mb-3 pb-3 border-b border-indigo-500/20">
+                                <span class="text-xs font-bold text-teal-300 uppercase tracking-widest">KẾT QUẢ TỪ GEMINI</span>
+                                <button onclick="copyToClipboard()" class="text-xs text-indigo-300 hover:text-white transition">Sao chép</button>
+                            </div>
+                            
+                            <div id="ai-result" class="flex-grow prose-output text-indigo-50 text-sm overflow-y-auto max-h-[400px]">
+                                <p class="text-indigo-400 italic mt-10 text-center">Kết quả sẽ hiển thị tại đây...</p>
+                            </div>
+
+                            <div id="loading-indicator" class="hidden absolute inset-0 bg-indigo-900/80 rounded-lg flex flex-col items-center justify-center z-10">
+                                <div class="loader mb-3"></div>
+                                <p class="text-indigo-200 text-sm animate-pulse">Gemini đang suy nghĩ...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 2: Interactive Framework Deconstructor -->
+            <div id="frameworks" class="space-y-6 scroll-mt-24">
+                <!-- Context Header -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">2. Giải Phẫu Cấu Trúc</h3>
+                    <p class="text-gray-600">
+                        Sau khi đã thử nghiệm, hãy tìm hiểu sâu hơn về từng cấu trúc. Di chuột qua các thành phần để hiểu rõ logic bên trong.
+                    </p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex space-x-1 bg-stone-100 p-1 rounded-xl overflow-x-auto">
+                    <button id="tab-rtf" onclick="switchFramework('rtf')" class="flex-1 py-3 px-4 rounded-lg text-sm font-bold text-gray-500 focus:outline-none transition-all duration-200 hover:text-gray-800">
+                        R-T-F (Cơ bản)
+                    </button>
+                    <button id="tab-costar" onclick="switchFramework('costar')" class="flex-1 py-3 px-4 rounded-lg text-sm font-bold text-gray-500 focus:outline-none transition-all duration-200 hover:text-gray-800">
+                        C-O-S-T-A-R (Chi tiết)
+                    </button>
+                    <button id="tab-rise" onclick="switchFramework('rise')" class="flex-1 py-3 px-4 rounded-lg text-sm font-bold text-gray-500 focus:outline-none transition-all duration-200 hover:text-gray-800">
+                        R-I-S-E (Quy trình)
+                    </button>
+                </div>
+
+                <!-- Interactive Display Area -->
+                <div id="framework-display" class="bg-white rounded-2xl shadow-lg border border-stone-200 overflow-hidden min-h-[500px] flex flex-col">
+                    <!-- Header of the Card -->
+                    <div id="card-header" class="p-6 border-b border-gray-100 bg-teal-50 transition-colors duration-300">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 id="fw-title" class="text-2xl font-bold text-teal-800">R-T-F</h4>
+                                <p id="fw-subtitle" class="text-teal-600 font-medium mt-1">Role - Task - Format</p>
+                            </div>
+                            <div id="fw-badge" class="px-3 py-1 bg-teal-200 text-teal-800 text-xs font-bold uppercase tracking-wide rounded-full">
+                                Tốc độ cao
+                            </div>
+                        </div>
+                        <p id="fw-desc" class="mt-4 text-gray-700">
+                            Cấu trúc nền tảng nhất cho người mới bắt đầu. Đảm bảo 3 yếu tố cốt lõi: Ai làm? Làm gì? Kết quả ra sao?
+                        </p>
+                    </div>
+
+                    <!-- Interactive Content -->
+                    <div class="p-6 flex flex-col gap-8 flex-grow">
+                        <!-- The Components (Hover Triggers) -->
+                        <div>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Thành phần (Di chuột để soi)</p>
+                            <div id="fw-components" class="flex flex-wrap gap-3">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Comparison: Bad vs Good -->
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Bad Prompt -->
+                            <div class="bg-red-50 rounded-xl p-5 border border-red-100 opacity-75">
+                                <div class="flex items-center gap-2 mb-3 text-red-600 font-bold text-sm">
+                                    <span class="text-lg">✕</span> Prompt Tệ
+                                </div>
+                                <p id="fw-bad-example" class="text-gray-700 italic font-medium">
+                                    "Viết cho tôi vài ý tưởng đăng Facebook về bán giày."
+                                </p>
+                            </div>
+
+                            <!-- Good Prompt -->
+                            <div class="bg-green-50 rounded-xl p-5 border border-green-100 relative shadow-sm">
+                                <div class="flex items-center gap-2 mb-3 text-green-700 font-bold text-sm">
+                                    <span class="text-lg">✓</span> Prompt Tối Ưu
+                                </div>
+                                <p id="fw-good-example" class="text-gray-800 leading-relaxed">
+                                    <!-- Generated by JS with spans -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Practice Quiz (UPDATED & RENAMED) -->
+            <div id="practice" class="bg-stone-900 text-white rounded-2xl p-8 shadow-xl relative overflow-hidden scroll-mt-24">
+                 <!-- Background accent -->
+                 <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500 opacity-5 blur-3xl rounded-full pointer-events-none"></div>
+
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-stone-700 pb-4 gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold flex items-center gap-2">
+                            3. Góc Luyện Tập Thực Tế
+                            <span class="px-2 py-0.5 bg-gradient-to-r from-orange-500 to-red-500 text-xs rounded-full font-bold">Vô Hạn ✨</span>
+                        </h3>
+                        <p class="text-stone-400 text-sm mt-1">Luyện tập khả năng phán đoán với các tình huống ngẫu nhiên do AI tạo ra.</p>
+                    </div>
+                    <button onclick="generateScenario()" id="gen-scenario-btn" class="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white text-sm font-semibold rounded-lg border border-stone-500 transition flex items-center gap-2 shadow-lg">
+                        <span>🎲 Tạo Tình Huống Mới</span>
+                    </button>
+                </div>
+
+                <!-- Scenario Display -->
+                <div id="scenario-container" class="mb-6 bg-stone-800/50 p-6 rounded-lg border border-stone-700">
+                    <p class="text-xs font-bold text-orange-400 uppercase tracking-widest mb-2">TÌNH HUỐNG HIỆN TẠI</p>
+                    <p id="scenario-text" class="text-lg text-stone-200 font-medium leading-relaxed">
+                        Bạn cần AI lập một kế hoạch giảm cân chi tiết trong 1 tháng dựa trên chỉ số cơ thể cụ thể và lịch trình bận rộn.
+                    </p>
+                    <div id="scenario-loader" class="hidden mt-4 flex items-center gap-2 text-stone-400 text-sm">
+                        <div class="loader w-4 h-4 border-stone-400 border-t-transparent"></div>
+                        Gemini đang sáng tạo tình huống...
+                    </div>
+                </div>
+                
+                <p class="text-stone-300 mb-4 text-sm">Theo bạn, cấu trúc nào phù hợp nhất để giải quyết vấn đề trên?</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="quiz-buttons">
+                    <button onclick="checkQuiz('rtf')" class="quiz-btn py-3 px-4 bg-stone-800 rounded-lg hover:bg-stone-700 border border-stone-600 transition font-medium">
+                        R-T-F (Cơ bản)
+                    </button>
+                    <button onclick="checkQuiz('costar')" class="quiz-btn py-3 px-4 bg-stone-800 rounded-lg hover:bg-stone-700 border border-stone-600 transition font-medium">
+                        C-O-S-T-A-R (Chi tiết)
+                    </button>
+                    <button onclick="checkQuiz('rise')" class="quiz-btn py-3 px-4 bg-stone-800 rounded-lg hover:bg-stone-700 border border-stone-600 transition font-medium">
+                        R-I-S-E (Quy trình)
+                    </button>
+                </div>
+                <div id="quiz-feedback" class="mt-4 hidden p-4 rounded-lg bg-stone-800 text-sm animate-fade-in border border-stone-700"></div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Analytics & Summary -->
+        <div class="lg:col-span-4 space-y-8">
+            
+            <!-- Radar Chart Section -->
+            <div id="comparison" class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm sticky top-24">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">So sánh Sức mạnh</h3>
+                <div class="chart-container">
+                    <canvas id="frameworkRadar"></canvas>
+                </div>
+                
+                <div class="mt-6 space-y-3 text-sm border-t border-gray-100 pt-4">
+                    <div class="flex items-start gap-2">
+                        <span class="w-3 h-3 mt-1 rounded-full bg-teal-400 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-gray-800">R-T-F:</span> 
+                            <p class="text-gray-500 text-xs">Nhanh, gọn, phù hợp tác vụ hàng ngày.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-3 h-3 mt-1 rounded-full bg-indigo-400 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-gray-800">C-O-S-T-A-R:</span> 
+                            <p class="text-gray-500 text-xs">Tối ưu cho sáng tạo, cảm xúc và ngữ cảnh phức tạp.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="w-3 h-3 mt-1 rounded-full bg-orange-400 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-gray-800">R-I-S-E:</span> 
+                            <p class="text-gray-500 text-xs">Chuyên trị các vấn đề logic, lập kế hoạch và quy trình.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-stone-100 py-8 border-t border-stone-200 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-stone-500 text-sm">Powered by Gemini API • Tạo bởi Canvas WebApp Generator</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+        // --- GEMINI API INTEGRATION ---
+        
+        // =========================================================================
+        // 👇👇👇 VUI LÒNG ĐIỀN API KEY CỦA BẠN VÀO GIỮA DẤU NGOẶC KÉP DƯỚI ĐÂY 👇👇👇
+        const apiKey = "AIzaSyB2N361ixKYFt9DR-VRaUDtPyfsCawXEJ4"; 
+        // =========================================================================
+
+        async function optimizePrompt() {
+            const input = document.getElementById('user-input').value.trim();
+            const framework = document.getElementById('framework-select').value;
+            
+            const resultDiv = document.getElementById('ai-result');
+            const loader = document.getElementById('loading-indicator');
+            const btn = document.getElementById('optimize-btn');
+
+            if (!apiKey) {
+                alert("Vui lòng mở file mã nguồn (HTML) và điền API Key vào dòng 'const apiKey = ...' để sử dụng AI Lab!");
+                return;
+            }
+
+            if (!input) {
+                alert("Vui lòng nhập ý tưởng của bạn trước!");
+                document.getElementById('user-input').focus();
+                return;
+            }
+
+            // UI State: Loading
+            loader.classList.remove('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            resultDiv.innerHTML = '<p class="text-indigo-400 italic mt-10 text-center">Đang xử lý...</p>';
+            
+            // Context Logic
+            let contextInstruction = "";
+            if (framework === "R-T-F") contextInstruction = "Focus on Role, Task, and Format. Keep it concise.";
+            if (framework === "C-O-S-T-A-R") contextInstruction = "Focus on Context, Objective, Style, Tone, Audience, and Response. Make it detailed.";
+            if (framework === "R-I-S-E") contextInstruction = "Focus on Role, Input, Steps, and Expectation. Focus on process and logic.";
+
+            const prompt = `
+                Bạn là một chuyên gia Prompt Engineering xuất sắc. Nhiệm vụ của bạn là viết lại một user input thô thành một Prompt hoàn chỉnh, tối ưu cho LLM (như ChatGPT/Gemini), sử dụng cấu trúc ${framework}.
+
+                Input của người dùng: "${input}"
+
+                Yêu cầu:
+                1. Viết lại Prompt sử dụng tiếng Việt, tuân thủ chặt chẽ cấu trúc ${framework}. ${contextInstruction}
+                2. Sử dụng định dạng in đậm (**Text**) cho các từ khóa của cấu trúc (Ví dụ: **(Role)** ...).
+                3. Sau khi viết Prompt, hãy thêm một phần ngắn gọn "💡 Tại sao prompt này tốt hơn?" giải thích 1-2 câu.
+
+                Output format: Trả về text thuần (không markdown block code), trình bày rõ ràng.
+            `;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error("API Error:", errorData);
+                    throw new Error('API Error');
+                }
+
+                const data = await response.json();
+                const text = data.candidates[0].content.parts[0].text;
+
+                // Format simple markdown to HTML for display
+                const formattedText = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                    .replace(/\n/g, '<br>'); // Line breaks
+
+                resultDiv.innerHTML = formattedText;
+
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = `<span class="text-red-400 block p-4 bg-red-900/20 rounded border border-red-500/50">Lỗi kết nối hoặc API Key không hợp lệ.<br>Vui lòng kiểm tra lại Key trong mã nguồn.</span>`;
+            } finally {
+                loader.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- NEW: INFINITE SCENARIO GENERATOR (GEMINI & FALLBACK) ---
+        
+        let currentScenarioData = {
+            answer: 'rise', // default
+            reason: 'Tình huống mặc định yêu cầu quy trình và logic.'
+        };
+        
+        // ADDED: Fallback scenarios when API is not available
+        const fallbackScenarios = [
+            {
+                text: "Bạn cần viết một caption Instagram thật thu hút để bán dòng son môi mới ra mắt cho giới trẻ.",
+                answer: "rtf",
+                reason: "Đây là tác vụ ngắn, cần định dạng cụ thể và vai trò rõ ràng (Marketer). R-T-F là đủ nhanh và hiệu quả."
+            },
+            {
+                text: "Bạn cần viết một email từ chối ứng viên sau phỏng vấn sao cho khéo léo, giữ được hình ảnh chuyên nghiệp của công ty nhưng không làm ứng viên tổn thương.",
+                answer: "costar",
+                reason: "Tình huống cần sự tinh tế về giọng điệu (Tone), phong cách (Style) và bối cảnh (Context) cụ thể. C-O-S-T-A-R là lựa chọn tốt nhất."
+            },
+            {
+                text: "Bạn muốn AI đóng vai chuyên gia tài chính, giúp bạn lập kế hoạch tiết kiệm để mua nhà trong 5 năm tới với mức lương hiện tại là 20 triệu/tháng.",
+                answer: "rise",
+                reason: "Đây là bài toán cần giải quyết vấn đề theo quy trình (Steps) dựa trên dữ liệu đầu vào (Input) cụ thể. R-I-S-E là phù hợp nhất."
+            },
+             {
+                text: "Bạn cần tóm tắt một bài báo dài 2000 từ thành 3 ý chính ngắn gọn để báo cáo sếp trong 5 phút nữa.",
+                answer: "rtf",
+                reason: "Yêu cầu đơn giản: Ai làm (Trợ lý), Làm gì (Tóm tắt), Định dạng (3 ý chính). R-T-F giúp ra kết quả nhanh nhất."
+            },
+            {
+                text: "Viết kịch bản video TikTok 60 giây review một quán bún chả, yêu cầu giọng văn hài hước, bắt trend Gen Z để viral.",
+                answer: "costar",
+                reason: "Yêu cầu nhấn mạnh vào Khán giả (Audience - Gen Z), Phong cách (Style - Hài hước) và Định dạng đầu ra phức tạp (Kịch bản). C-O-S-T-A-R là tối ưu."
+            },
+            {
+                text: "Bạn có một đoạn code Python bị lỗi nhưng không biết sai ở đâu. Bạn cần AI phân tích lỗi, giải thích nguyên nhân và đưa ra code sửa lỗi.",
+                answer: "rise",
+                reason: "Cần tư duy logic: Input (Code lỗi) -> Steps (Phân tích, giải thích, sửa) -> Expectation (Code chạy được). R-I-S-E chuyên trị các vấn đề này."
+            },
+            {
+                text: "Dịch một danh sách 50 thuật ngữ chuyên ngành Y khoa từ tiếng Anh sang tiếng Việt để làm tài liệu tra cứu.",
+                answer: "rtf",
+                reason: "Đây là tác vụ dịch thuật đơn thuần cần định dạng đầu ra rõ ràng (Bảng/Danh sách). R-T-F là lựa chọn nhanh gọn nhất."
+            },
+            {
+                text: "Soạn một tin nhắn rủ 'Crush' đi xem phim vào cuối tuần này. Các bạn mới quen nhau 1 tuần, cần sự tự nhiên nhưng không quá sỗ sàng.",
+                answer: "costar",
+                reason: "Yếu tố cảm xúc, giọng điệu (Tone) và đối tượng (Audience) là quan trọng nhất ở đây. C-O-S-T-A-R giúp kiểm soát tốt sắc thái."
+            },
+            {
+                text: "Lên quy trình xử lý khủng hoảng truyền thông khi công ty bị khách hàng 'bóc phốt' trên mạng xã hội.",
+                answer: "rise",
+                reason: "Đây là vấn đề phức tạp cần giải quyết theo các bước (Steps) logic và có tính hệ thống. R-I-S-E là phù hợp nhất."
+            },
+            {
+                text: "Tạo một thực đơn ăn chay 7 ngày cho người mới bắt đầu, đảm bảo đủ dinh dưỡng và không quá đắt tiền.",
+                answer: "rise",
+                reason: "Cần lập kế hoạch (Steps) dựa trên các ràng buộc đầu vào (Input: chay, dinh dưỡng, giá rẻ). R-I-S-E rất mạnh ở khoản này."
+            }
+        ];
+        
+        let lastFallbackIndex = -1;
+
+        async function generateScenario() {
+            const btn = document.getElementById('gen-scenario-btn');
+            const loader = document.getElementById('scenario-loader');
+            const textDisplay = document.getElementById('scenario-text');
+            const feedback = document.getElementById('quiz-feedback');
+            
+            // UI Reset
+            feedback.classList.add('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            loader.classList.remove('hidden');
+            textDisplay.classList.add('opacity-50');
+
+            // --- STRATEGY: TRY API -> FAIL -> USE FALLBACK ---
+            
+            let useFallback = !apiKey; // If no key, straight to fallback
+
+            if (apiKey) {
+                const prompt = `
+                    Generate a unique, short Prompt Engineering practice scenario (a problem or task a user needs AI to do) in Vietnamese. 
+                    Identify which framework is BEST suited for it among: 'rtf' (Simple/Fast), 'costar' (Creative/Context-heavy), or 'rise' (Logical/Process/Planning).
+                    
+                    Return ONLY a JSON object with this format (no markdown):
+                    {
+                        "text": "The scenario description in Vietnamese...",
+                        "best_framework": "rtf" or "costar" or "rise",
+                        "reason": "Explanation in Vietnamese why this framework is best..."
+                    }
+                `;
+
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+
+                    if (!response.ok) throw new Error('API Error');
+
+                    const data = await response.json();
+                    const jsonText = data.candidates[0].content.parts[0].text;
+                    const result = JSON.parse(jsonText);
+
+                    // Update UI with new scenario from API
+                    textDisplay.innerText = result.text;
+                    
+                    // Update Logic State
+                    currentScenarioData = {
+                        answer: result.best_framework.toLowerCase(),
+                        reason: result.reason
+                    };
+
+                } catch (error) {
+                    console.error("API failed, switching to fallback:", error);
+                    useFallback = true;
+                }
+            }
+
+            // --- FALLBACK LOGIC ---
+            if (useFallback) {
+                // Wait a small fake delay to make it feel like "processing" even if offline
+                await new Promise(r => setTimeout(r, 600));
+
+                let newIndex;
+                // Ensure we don't pick the exact same scenario twice in a row
+                do {
+                    newIndex = Math.floor(Math.random() * fallbackScenarios.length);
+                } while (newIndex === lastFallbackIndex && fallbackScenarios.length > 1);
+                
+                lastFallbackIndex = newIndex;
+                const scenario = fallbackScenarios[newIndex];
+
+                textDisplay.innerText = scenario.text;
+                currentScenarioData = {
+                    answer: scenario.answer,
+                    reason: scenario.reason
+                };
+            }
+
+            // Cleanup UI
+            loader.classList.add('hidden');
+            textDisplay.classList.remove('opacity-50');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('ai-result').innerText;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert("Đã sao chép vào bộ nhớ tạm!");
+                } else {
+                    alert("Không thể tự động sao chép. Vui lòng bôi đen và sao chép thủ công.");
+                }
+            } catch (err) {
+                alert("Trình duyệt chặn quyền truy cập bộ nhớ tạm. Vui lòng sao chép thủ công.");
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // --- EXISTING LOGIC STORE ---
+        const frameworks = {
+            rtf: {
+                title: "R-T-F",
+                subtitle: "Role - Task - Format",
+                desc: "Dành cho tác vụ nhanh, cần sự chính xác cơ bản và không quá phức tạp. Đảm bảo AI hiểu nó là ai, làm gì và trả về định dạng nào.",
+                badge: "Tốc độ cao",
+                colorClass: "teal", // Tailwind color base
+                badExample: "Viết cho tôi vài ý tưởng đăng Facebook về bán giày.",
+                goodExampleParts: [
+                    { id: "r", label: "Role (Vai trò)", text: "Đóng vai một chuyên gia Social Media Marketing." },
+                    { id: "t", label: "Task (Nhiệm vụ)", text: "Hãy viết 5 ý tưởng nội dung bài đăng Facebook để quảng bá dòng giày chạy bộ mới, tập trung vào tính năng êm ái." },
+                    { id: "f", label: "Format (Định dạng)", text: "Trình bày kết quả dưới dạng danh sách bullet point, kèm theo gợi ý về hình ảnh minh họa cho mỗi ý tưởng." }
+                ]
+            },
+            costar: {
+                title: "C-O-S-T-A-R",
+                subtitle: "Context - Objective - Style - Tone - Audience - Response",
+                desc: "Vũ khí hạng nặng cho các tác vụ phức tạp, yêu cầu văn phong cụ thể và sáng tạo nội dung chất lượng cao.",
+                badge: "Toàn diện",
+                colorClass: "indigo",
+                badExample: "Viết email xin lỗi khách hàng vì giao hàng chậm.",
+                goodExampleParts: [
+                    { id: "c", label: "Context (Bối cảnh)", text: "Chúng ta là một cửa hàng thời trang cao cấp, đang gặp sự cố vận chuyển do bão, khiến đơn hàng bị trễ 3 ngày." },
+                    { id: "o", label: "Objective (Mục tiêu)", text: "Viết một email xin lỗi để xoa dịu khách hàng và giữ chân họ." },
+                    { id: "s", label: "Style (Phong cách)", text: "Chuyên nghiệp nhưng chân thành." },
+                    { id: "t", label: "Tone (Giọng điệu)", text: "Hối lỗi, thấu hiểu và cam kết." },
+                    { id: "a", label: "Audience (Khán giả)", text: "Những khách hàng VIP khó tính." },
+                    { id: "r", label: "Response (Phản hồi)", text: "Email ngắn gọn, bao gồm tiêu đề email và tặng kèm mã giảm giá 10% ở cuối thư." }
+                ]
+            },
+            rise: {
+                title: "R-I-S-E",
+                subtitle: "Role - Input - Steps - Expectation",
+                desc: "Tối ưu cho quy trình, tư duy logic và giải quyết vấn đề. Giúp AI không chỉ trả lời 'cái gì' mà còn là 'như thế nào'.",
+                badge: "Logic & Quy trình",
+                colorClass: "orange",
+                badExample: "Làm sao để tôi giảm cân?",
+                goodExampleParts: [
+                    { id: "r", label: "Role (Vai trò)", text: "Bạn là một Huấn luyện viên thể hình (PT) và chuyên gia dinh dưỡng cá nhân." },
+                    { id: "i", label: "Input (Đầu vào)", text: "Tôi là nhân viên văn phòng, nam, 30 tuổi, nặng 80kg, chỉ có 30 phút rảnh mỗi ngày vào buổi sáng. Tôi không ăn được đồ cay." },
+                    { id: "s", label: "Steps (Các bước)", text: "Hãy xây dựng một lộ trình giảm cân trong 1 tháng. Bao gồm: 1. Phân tích chỉ số BMI. 2. Lập kế hoạch tập luyện phù hợp. 3. Gợi ý thực đơn mẫu." },
+                    { id: "e", label: "Expectation (Kỳ vọng)", text: "Kế hoạch phải thực tế, dễ thực hiện, giọng văn động viên tích cực." }
+                ]
+            }
+        };
+
+        let currentFw = 'rtf';
+        let chartInstance = null;
+
+        // --- DOM MANIPULATION ---
+
+        function init() {
+            renderChart();
+            switchFramework('rtf'); // Load default
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function switchFramework(fwKey) {
+            currentFw = fwKey;
+            const data = frameworks[fwKey];
+            const color = data.colorClass;
+
+            // 1. Update Tabs styling
+            document.querySelectorAll('#frameworks button[id^="tab-"]').forEach(btn => {
+                btn.className = `flex-1 py-3 px-4 rounded-lg text-sm font-bold text-gray-500 focus:outline-none transition-all duration-200 hover:text-gray-800 bg-stone-100`;
+            });
+            const activeBtn = document.getElementById(`tab-${fwKey}`);
+            activeBtn.className = `flex-1 py-3 px-4 rounded-lg text-sm font-bold focus:outline-none transition-all duration-200 bg-white shadow text-${color}-600 border border-stone-200`;
+
+            // 2. Update Header Content & Styles
+            const header = document.getElementById('card-header');
+            // Reset colors
+            header.className = `p-6 border-b border-gray-100 transition-colors duration-300 bg-${color}-50`;
+            
+            document.getElementById('fw-title').innerText = data.title;
+            document.getElementById('fw-title').className = `text-2xl font-bold text-${color}-800`;
+            
+            document.getElementById('fw-subtitle').innerText = data.subtitle;
+            document.getElementById('fw-subtitle').className = `text-${color}-600 font-medium mt-1`;
+
+            document.getElementById('fw-badge').innerText = data.badge;
+            document.getElementById('fw-badge').className = `px-3 py-1 bg-${color}-200 text-${color}-800 text-xs font-bold uppercase tracking-wide rounded-full`;
+
+            document.getElementById('fw-desc').innerText = data.desc;
+
+            // 3. Update Bad Example
+            document.getElementById('fw-bad-example').innerText = `"${data.badExample}"`;
+
+            // 4. Update Components & Good Example
+            const componentsContainer = document.getElementById('fw-components');
+            const goodExampleContainer = document.getElementById('fw-good-example');
+            
+            componentsContainer.innerHTML = '';
+            goodExampleContainer.innerHTML = '';
+
+            data.goodExampleParts.forEach((part, index) => {
+                // Create Component Button
+                const btn = document.createElement('div');
+                btn.className = `cursor-pointer px-3 py-2 rounded border border-${color}-200 bg-white hover:bg-${color}-100 text-${color}-700 text-sm font-semibold transition shadow-sm select-none`;
+                btn.innerText = part.label;
+                btn.onmouseenter = () => highlightPart(index, color);
+                btn.onmouseleave = () => removeHighlight(index, color);
+                componentsContainer.appendChild(btn);
+
+                // Create Text Span
+                const span = document.createElement('span');
+                span.id = `text-part-${index}`;
+                span.className = "highlight-transition px-0.5 rounded";
+                span.innerText = part.text + " "; // Add space
+                goodExampleContainer.appendChild(span);
+            });
+        }
+
+        function highlightPart(index, color) {
+            const span = document.getElementById(`text-part-${index}`);
+            if (span) {
+                // Tailwind dynamic classes don't always work if not pre-parsed, using inline style for guaranteed dynamic color
+                if(color === 'teal') span.style.backgroundColor = '#ccfbf1'; // teal-100
+                if(color === 'indigo') span.style.backgroundColor = '#e0e7ff'; // indigo-100
+                if(color === 'orange') span.style.backgroundColor = '#ffedd5'; // orange-100
+                
+                span.style.color = '#000';
+                span.style.fontWeight = '600';
+            }
+        }
+
+        function removeHighlight(index, color) {
+            const span = document.getElementById(`text-part-${index}`);
+            if (span) {
+                span.style.backgroundColor = 'transparent';
+                span.style.color = '';
+                span.style.fontWeight = 'normal';
+            }
+        }
+
+        // --- UPDATED QUIZ CHECKER ---
+        function checkQuiz(userAnswer) {
+            const feedback = document.getElementById('quiz-feedback');
+            
+            // Compare user answer with the current valid answer from Gemini (or default)
+            if (userAnswer === currentScenarioData.answer) {
+                feedback.innerHTML = `<span class="text-green-400 font-bold">Chính xác!</span> ${currentScenarioData.reason}`;
+                feedback.className = "mt-4 block p-4 rounded-lg bg-green-900/50 border border-green-700 text-green-100 text-sm animate-fade-in";
+            } else {
+                feedback.innerHTML = `<span class="text-red-400 font-bold">Chưa tối ưu.</span> Cấu trúc này có thể không phù hợp nhất. ${currentScenarioData.reason} Hãy thử lại!`;
+                feedback.className = "mt-4 block p-4 rounded-lg bg-red-900/50 border border-red-700 text-red-100 text-sm animate-fade-in";
+            }
+            feedback.classList.remove('hidden');
+        }
+
+        // --- CHART CONFIG ---
+        function renderChart() {
+            const ctx = document.getElementById('frameworkRadar').getContext('2d');
+            
+            // CHANGED: Using Be Vietnam Pro font here too
+            const fontConfig = { family: "'Be Vietnam Pro', sans-serif" };
+
+            const data = {
+                labels: [
+                    'Tốc độ (Speed)', 
+                    'Độ chi tiết (Detail)', 
+                    'Tính sáng tạo (Creativity)', 
+                    'Tính logic/Quy trình (Logic)', 
+                    'Độ phức tạp đầu vào (Complexity)'
+                ],
+                datasets: [{
+                    label: 'R-T-F',
+                    data: [100, 40, 50, 40, 30],
+                    fill: true,
+                    backgroundColor: 'rgba(20, 184, 166, 0.2)', // Teal
+                    borderColor: 'rgb(20, 184, 166)',
+                    pointBackgroundColor: 'rgb(20, 184, 166)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(20, 184, 166)'
+                }, {
+                    label: 'C-O-S-T-A-R',
+                    data: [40, 95, 100, 60, 80],
+                    fill: true,
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo
+                    borderColor: 'rgb(79, 70, 229)',
+                    pointBackgroundColor: 'rgb(79, 70, 229)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(79, 70, 229)'
+                }, {
+                    label: 'R-I-S-E',
+                    data: [50, 80, 50, 100, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(249, 115, 22, 0.2)', // Orange
+                    borderColor: 'rgb(249, 115, 22)',
+                    pointBackgroundColor: 'rgb(249, 115, 22)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(249, 115, 22)'
+                }]
+            };
+
+            const config = {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 2
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: {
+                                // CHANGED: Updated font
+                                font: { size: 12, ...fontConfig, weight: 'bold' },
+                                color: '#4b5563'
+                            },
+                            ticks: { display: false },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }, // Legend moved to HTML for better layout
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            // CHANGED: Updated font
+                            titleFont: fontConfig,
+                            bodyFont: fontConfig,
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    }
+                },
+            };
+
+            chartInstance = new Chart(ctx, config);
+        }
+
+        // Run Init
+        init();
+
+    </script>
+</body>
+</html>
